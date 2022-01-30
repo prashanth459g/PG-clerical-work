@@ -1,0 +1,47 @@
+graph
+A(Receives a case) -.-> |Sent by colleague from OPD/casualty| P{PGY1 <br> The User};
+subgraph Resident
+P
+end
+subgraph Server
+R
+end
+subgraph Fresh case
+P & NP ==> R[(Go Through the data <br> Already available in the system <br> Continue filling data further)];
+
+
+subgraph Demography-Details
+direction RL
+name/age/sex/date & id((OP/IP <br> id number)) & ddx[/Working Diagnosis/] <--include--> NP;
+end
+P --> |Enters| NP[New patient details];
+
+subgraph History
+direction TB
+NP -.-> CC(Chief complaints) --> HOPI(History of presenting illness);
+end
+HOPI -.-> G;
+subgraph Examination
+G(General Physical Examination) --> S(systemic Examination);
+end
+
+P ---> nur(Put down <br> Nursing orders);
+P ---> mon(set alarm <br> to <br> monitor high risk cases);
+P ---> pr(Print Consent forms);
+pr --> explain(Explain the condition & treatment <br> options available to the <br> Patient & attenders);
+explain --> sign(Explain the risks involved with the best/chosen option <br> Get Consent signed by the Patients/Guardian);
+end
+
+
+subgraph Follow up case
+R ==> P --> retrieve(Retrieve details from server <br> & <br> track update from different inputs);
+retrieve --> opfp(enter Details for OPD patient for further follow up visits);
+opfp --> opprofile(Add different patient profile type) -.-> ANC(Check Antenatal visit with medication details);
+opprofile -.-> gyn(Gynecology patient case wise);
+opprofile -.-> sur(surgical cases with investigation);
+retrieve --> fp(Check the Follow up Events from yesterday's task, <br> Add new order);
+fp --> infp(In-Patient follow up <br> Nursing orders <br> Investigation sent & Reports received <br>  );
+infp --> disA(Automated generate of Discharge summary);
+disA --> disE(Edit the generated Discharge card & add follow up orders);
+disE -.-> |Add Here| R;
+end
